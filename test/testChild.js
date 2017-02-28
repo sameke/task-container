@@ -1,5 +1,5 @@
 module.exports = (options, callback) => {
     setTimeout(() => {
-        callback(null, {msg: 'hello world'});
+        callback(null, options);
     }, 500);    
 }
