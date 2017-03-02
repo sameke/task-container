@@ -67,3 +67,6 @@ module.exports = (data, callback) => {
   
 **callback**  
   Method which gets called when task has completed.
+  
+  # Advanced
+  *To receive messages from the child process that do not trigger the callback function you need to add a ```result.ignore=true``` property to what is passed to ```process.send```
