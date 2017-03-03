@@ -1,6 +1,6 @@
 {
   "name": "task-container",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node task runner. Allows user to create and run Node task in separate process.",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "keywords": [
     "node-task",
     "task",
-	"thread",
+	  "thread",
     "threads",
     "threading",
     "process",
