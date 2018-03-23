@@ -1,23 +1,48 @@
-const TaskContainer = require('../lib/TaskContainer');
+require('./chai');
+const TaskContainer = require('../');
+const TaskRunner = require('../').TaskRunner;
 
-let p = new TaskContainer({maxHandlers: 10, maxCallsPerHandler: 10});
-let count = 0;
-p.on('message', (msg) => {
-        console.log('ignored message received:');
-        console.log(msg);
-    });
+//TODO: child_process.fork not working in mocha tests
+// describe('TaskContainer', () => {
+//     describe('TaskRunner', () => {
+//         it('should run single task and return', async (done) => {
+//             try {
+//                 let result = await TaskRunner.run(require.resolve('./tasks/echo'), {test: 'test'});
+//                 expect(result.test).to.equal('test');
+//                 done();
+//             } catch(ex) {
+//                 done(ex);
+//             }
+//         });
+//     });
+// });
 
-setInterval(() => {
-      
-    p.run(require.resolve('./testChild'), {test: 'hello world'}, (err, res) => {
-        console.log(res);
-        //console.log(err);
-    });
-    count++;
+(async () => {
+    console.log('TaskRunner Tests');
+    try {
+        let result = await TaskRunner.run(require.resolve('./tasks/echo'), { test: 'test' });
+        assert(result.test === 'test');
+        console.log('echo test successful');
+    } catch(ex) {
+        console.log(ex);
+    }
 
-    if(count >= 10) {
-        p.killAll();
-        count = 0;
-    }    
-}, 1000);
+    console.log('TaskContainer Tests');
+    let tc = new TaskContainer();
+    try {
+        let count = 0;
+        for(let i = 0; i < 10; i++) {
+            tc.run(require.resolve('./tasks/echo'), {number: i}).then((r) => {
+                console.log(`number ${r.number}`);
+                count++;
+                if(count == 10) {
+                    tc.stop();
+                }
+            });
+        }
+    } catch(ex) {
+
+    }
+})();
+
 

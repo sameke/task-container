@@ -1,10 +1,10 @@
 {
   "name": "task-container",
-  "version": "0.0.4",
-  "description": "Node task runner. Allows user to create and run Node task in separate process.",
+  "version": "1.0.0",
+  "description": "Node task runner. Allows user to create and run Node tasks in separate process.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "keywords": [
     "node-task",
     "task",
-	  "thread",
+    "thread",
     "threads",
     "threading",
     "process",
@@ -26,12 +26,22 @@
     "tasking",
     "tasker",
     "multi-thread",
-    "multi-threading"
+    "multi-threading",
+    "async/await",
+    "async",
+    "await",
+    ".net",
+    "task-pattern"
   ],
   "author": "weagle08",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/weagle08/task-container/issues"
   },
-  "homepage": "https://github.com/weagle08/task-container#readme"
+  "homepage": "https://github.com/weagle08/task-container#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^9.4.7",
+    "chai": "^4.1.2"
+  }
 }

@@ -1,4 +1,6 @@
-const TaskContainer = require('./lib/TaskContainer');
+const TaskContainer = require('./dist/taskContainer');
+const TaskRunner = require('./dist/taskRunner');
 
 module.exports = TaskContainer;
-module.exports.TaskContainer = TaskContainer; //for TS users
+module.exports.TaskRunner = TaskRunner.TaskRunner;
+module.exports.TaskContainer = TaskContainer.TaskContainer;
