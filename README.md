@@ -1,5 +1,5 @@
 # task-container
-Node async task runner. Allows user to create and run Node tasks in separate processd.
+Node async task runner. Allows user to create and run Node tasks in seperate process.
 
 The child task should export a function that accepts input data object and a callback as the second parameter or must return a promise.
 # Example
