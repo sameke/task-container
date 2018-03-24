@@ -1,7 +1,7 @@
 import {TaskRunner} from './taskRunner';
 import {ContainerOptions} from './containerOptions';
 
-module.exports = class TaskContainer {
+export class TaskContainer {
     private _options: ContainerOptions;
     private _maxRunners: number;
     private _maxCalls: number;

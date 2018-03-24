@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const taskRunner_1 = require("./taskRunner");
 const containerOptions_1 = require("./containerOptions");
-module.exports = class TaskContainer {
+class TaskContainer {
     constructor(options) {
         this._options = Object.assign({}, new containerOptions_1.ContainerOptions(), options || {});
         this._maxRunners = !isNaN(this._options.maxTaskRunners) && this._options.maxTaskRunners > 0 ? this._options.maxTaskRunners : require('os').cpus().length - 1;
@@ -69,4 +69,5 @@ module.exports = class TaskContainer {
             tr.stop();
         }
     }
-};
+}
+exports.TaskContainer = TaskContainer;
