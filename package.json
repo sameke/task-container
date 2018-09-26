@@ -1,6 +1,6 @@
 {
   "name": "task-container",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Node task runner. Allows user to create and run Node tasks in separate process.",
   "main": "dist/index.js",
   "types": "src/index.ts",
