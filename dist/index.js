@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const taskContainer_1 = require("./taskContainer");
+var taskContainer_1 = require("./taskContainer");
 exports.TaskContainer = taskContainer_1.TaskContainer;
-const taskRunner_1 = require("./taskRunner");
+var taskRunner_1 = require("./taskRunner");
 exports.TaskRunner = taskRunner_1.TaskRunner;
-exports.default = taskContainer_1.TaskContainer;
+var taskOptions_1 = require("./taskOptions");
+exports.TaskOptions = taskOptions_1.TaskOptions;
+var containerOptions_1 = require("./containerOptions");
+exports.ContainerOptions = containerOptions_1.ContainerOptions;

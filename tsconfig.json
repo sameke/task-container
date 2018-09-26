@@ -1,12 +1,13 @@
 {
     "compilerOptions": {
         "outDir": "./dist",
-        "allowJs": true,
+        "allowJs": false,
         "module": "commonjs",
         "target": "es2017",
         "moduleResolution": "node",
         "noImplicitAny": true,
         "strictNullChecks": false,
+        "declaration": true,
         "sourceMap": false,
         "typeRoots": [
             "node_modules/@types"
