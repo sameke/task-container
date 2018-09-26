@@ -9,7 +9,7 @@ export class TaskContainer {
     private _taskQueue: any[];
 
 
-    constructor(options?: ContainerOptions) {
+    public constructor(options?: ContainerOptions) {
         this._options = Object.assign({}, new ContainerOptions(), options || {});
         this._maxRunners = !isNaN(this._options.maxTaskRunners) && this._options.maxTaskRunners > 0 ? this._options.maxTaskRunners : require('os').cpus().length - 1;
         this._maxCalls = !isNaN(this._options.maxCallsPerTaskRunner) && this._options.maxCallsPerTaskRunner > 0 ? this._options.maxCallsPerTaskRunner : Infinity;
@@ -17,7 +17,7 @@ export class TaskContainer {
         this._taskQueue = [];
     }
 
-    async run(path: string, data: any) {        
+    public async run(path: string, data: any) {        
         let task = {            
             script: path,
             data: data,
@@ -35,7 +35,7 @@ export class TaskContainer {
         return task.cb.promise;
     }
 
-    _processQueue() {
+    private _processQueue() {
 
         //clean up dead runners or runners which have reached max calls
         for (let tr of [...this._taskRunners].map(v => v)) {
@@ -79,7 +79,7 @@ export class TaskContainer {
         }
     }
     
-    stop() {
+    public stop() {
         for(let tr of this._taskRunners) {
             tr.stop();
         }

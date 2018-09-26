@@ -20,7 +20,7 @@ export declare class TaskRunner extends EventEmitter {
     readonly isFree: boolean;
     readonly isDead: boolean;
     readonly count: number;
-    _setup(): void;
+    private _setup;
     /**
      * runs the script at the specified path passing the given data
      */

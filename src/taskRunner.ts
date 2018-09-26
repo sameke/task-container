@@ -21,7 +21,7 @@ export class TaskRunner extends EventEmitter {
      * 
      * @see https://nodejs.org/docs/latest/api/child_process.html#child_process_child_process_fork_modulepath_args_options
      */
-    constructor(options?: TaskOptions) {
+    public constructor(options?: TaskOptions) {
         super();        
         if (options != null && options.args != null) {
             this._childArgs = options.args;
@@ -32,19 +32,19 @@ export class TaskRunner extends EventEmitter {
         this._setup();
     }
     
-    get isFree() {
+    public get isFree() {
         return this._isFree;
     }
     
-    get isDead() {
+    public get isDead() {
         return this._isDead;
     }
     
-    get count() {
+    public get count() {
         return this._count;
     }
 
-    _setup(): void {
+    private _setup(): void {
         this._process = fork(
             require.resolve("./task"),
             this._childArgs,
@@ -74,7 +74,7 @@ export class TaskRunner extends EventEmitter {
     /**
      * runs the script at the specified path passing the given data
      */
-    async start(path: string, data: any): Promise<any> {
+    public async start(path: string, data: any): Promise<any> {
         if(this._isDead === true) {            
             return Promise.reject(new Error('TaskRunner has exited. Please create new task runner'));
         }
@@ -110,7 +110,7 @@ export class TaskRunner extends EventEmitter {
         }
     }
     
-    stop(): void {
+    public stop(): void {
         if(this._isDead === false) {                     
             this._process.kill();
             this._process.removeAllListeners();
@@ -124,7 +124,7 @@ export class TaskRunner extends EventEmitter {
      * 
      * @returns TaskRunner
      */
-    static async run(path: string, data: any, options: TaskOptions) {
+    public static async run(path: string, data: any, options: TaskOptions) {
         let task = new TaskRunner(options);
         return task.start(path, data).then((r) => {
             task.stop();

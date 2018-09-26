@@ -7,6 +7,6 @@ export declare class TaskContainer {
     private _taskQueue;
     constructor(options?: ContainerOptions);
     run(path: string, data: any): Promise<any>;
-    _processQueue(): void;
+    private _processQueue;
     stop(): void;
 }
