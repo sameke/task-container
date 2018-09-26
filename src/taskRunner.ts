@@ -1,4 +1,4 @@
-import {fork, ChildProcess} from 'child_process';
+import {fork, ChildProcess, ForkOptions} from 'child_process';
 import * as EventEmitter from 'events';
 import {TaskOptions} from './taskOptions';
 
@@ -48,7 +48,7 @@ export class TaskRunner extends EventEmitter {
         this._process = fork(
             require.resolve("./task"),
             this._childArgs,
-            this._childOptions
+            this._childOptions as ForkOptions
         );
 
         //listen for messages returned from child_process
