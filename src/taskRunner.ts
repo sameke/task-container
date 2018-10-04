@@ -44,7 +44,7 @@ export class TaskRunner extends EventEmitter {
         return this._count;
     }
 
-    _setup(): void {
+    private _setup(): void {
         this._process = fork(
             require.resolve("./task"),
             this._childArgs,
@@ -124,7 +124,7 @@ export class TaskRunner extends EventEmitter {
      * 
      * @returns TaskRunner
      */
-    static async run(path: string, data: any, options: TaskOptions) {
+    public static async run(path: string, data: any, options: TaskOptions) {
         let task = new TaskRunner(options);
         return task.start(path, data).then((r) => {
             task.stop();
