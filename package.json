@@ -6,9 +6,7 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc",
-        "prepare": "npm run build",
-        "prepublishOnly": "git add . && git commit -m \"prepare publish\" && npm version patch",
-        "postpublish": "git push"
+        "prepare": "npm run build"
     },
     "repository": {
         "type": "git",
