@@ -51,7 +51,7 @@ tc.run(require.resolve('./childTask'), {test: 'hello world'}).then((result) => {
 **options**  
 ```javascript
 {
-  maxTaskRunners: [number], //default: require('os').cpus().length - 1,
+  maxTaskRunners: [number], //default: 1,
   maxCallsPerTaskRunner: [number], //default: Infinity
 }
 ```

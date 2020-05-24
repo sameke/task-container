@@ -1,12 +1,12 @@
-import { ContainerOptions } from './containerOptions';
-export declare class TaskContainer {
+/// <reference types="node" />
+import { EventEmitter } from 'events';
+import { IContainerOptions } from './IContainerOptions';
+export declare class TaskContainer extends EventEmitter {
     private _options;
-    private _maxRunners;
-    private _maxCalls;
-    private _taskRunners;
-    private _taskQueue;
-    constructor(options?: ContainerOptions);
-    run(path: string, data: any): Promise<any>;
-    private _processQueue;
-    stop(): void;
+    private readonly _taskQueue;
+    private readonly _taskRunners;
+    constructor(options?: IContainerOptions);
+    run(taskPath: string, data?: any): Promise<any>;
+    private processQueue;
+    dispose(): void;
 }

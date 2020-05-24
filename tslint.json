@@ -23,14 +23,16 @@
         "max-line-length": [
             true,
             {
-                "limit": 200,
+                "limit": 250,
                 "ignore-pattern": "^\\s*\\*"
             }
         ],
         "member-ordering": false,
         "object-literal-shorthand": false,
         "prefer-const": false,
-        "forin": false
+        "forin": false,
+        "ban-types": false,
+        "ordered-imports": true
     },
     "linterOptions": {
         "exclude": [

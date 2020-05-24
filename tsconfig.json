@@ -1,19 +1,27 @@
 {
+    "compileOnSave": false,
     "compilerOptions": {
-        "outDir": "./dist",
-        "allowJs": false,
-        "module": "commonjs",
-        "target": "es2017",
-        "moduleResolution": "node",
-        "noImplicitAny": true,
-        "strictNullChecks": false,
-        "declaration": true,
+        "rootDir": "src",
+        "outDir": "dist",
         "sourceMap": false,
-        "typeRoots": [
-            "node_modules/@types"
-        ]
+        "target": "es2017",
+        "module": "commonjs",
+        "declaration": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node"
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build",
+        "coverage",
+        "apidocs",
+        "docs"
     ]
 }

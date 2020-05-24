@@ -1,140 +1,114 @@
-import { fork, ChildProcess, ForkOptions } from 'child_process';
-import * as EventEmitter from 'events';
-import { TaskOptions } from './taskOptions';
-
-const MESSAGE = Symbol();
-const ERROR = Symbol();
+import { ChildProcess, fork } from 'child_process';
+import { EventEmitter } from 'events';
+import { IInternalTask } from './IInternalTask';
+import { ITaskOptions } from './ITaskOptions';
 
 export class TaskRunner extends EventEmitter {
-    private _childArgs: string[] = null;
-    private _isFree: boolean = true;
     private _isDead: boolean = false;
-    private _count: number = 0;
-    private _childOptions: TaskOptions;
+    private _runCount: number = 0;
     private _process: ChildProcess;
+    private _currentTask: IInternalTask;
 
-    /**
-     * creates new instance of a task runner
-     * 
-     * @param {TaskOptions} options the child_process options for this task runner
-     * @param {string[]} options.args the command line args to pass to the spawned node process
-     * 
-     * @see https://nodejs.org/docs/latest/api/child_process.html#child_process_child_process_fork_modulepath_args_options
-     */
-    constructor(options?: TaskOptions) {
+    public constructor() {
         super();
-        if (options != null && options.args != null) {
-            this._childArgs = options.args;
-            delete options.args;
-        }
 
-        this._childOptions = <TaskOptions>Object.assign({}, new TaskOptions(), options || {});
-        this._setup();
-    }
-
-    get isFree() {
-        return this._isFree;
-    }
-
-    get isDead() {
-        return this._isDead;
-    }
-
-    get count() {
-        return this._count;
-    }
-
-    private _setup(): void {
         this._process = fork(
-            require.resolve("./task"),
-            this._childArgs,
-            this._childOptions as any
+            require.resolve('./taskProxy')
         );
 
-        //listen for messages returned from child_process
+        // listen for messages returned from child_process
         this._process.on('message', (msg: any): void => {
-            if (msg.error != null) {
-                this.emit(ERROR, msg.error);
+            if (this._currentTask != null) {
+                if (msg.error != null) {
+                    this._currentTask.cb.reject(new Error(msg.error));
+                } else {
+                    this._currentTask.cb.resolve(msg.result);
+                }
+                this._currentTask = null;
             } else {
-                this.emit(MESSAGE, msg.result);
+                this.emit('error', new Error('received message event with no task available'));
             }
+            this.emit('free');
         });
 
-        //listen for errors returned from child_process
-        this._process.on('error', (err: any): void => {
-            this.emit(ERROR, err);
+        // listen for errors returned from child_process
+        this._process.on('error', (err: Error): void => {
+            if (this._currentTask != null) {
+                this._currentTask.cb.reject(err);
+            } else {
+                this.emit('error', err);
+            }
+            this._currentTask = null;
+            this.emit('free');
+        });
+
+        this._process.on('close', () => {
+            this.stop();
         });
 
         this._process.on('exit', (): void => {
-            this._isDead = true;
-            this.emit('exit');
+            this.stop();
         });
     }
 
-    /**
-     * runs the script at the specified path passing the given data
-     */
-    async start(path: string, data: any): Promise<any> {
+    public get isFree(): boolean {
+        return this._currentTask == null;
+    }
+
+    public get isDead(): boolean {
+        return this._isDead;
+    }
+
+    public get count(): number {
+        return this._runCount;
+    }
+
+    public run(task: IInternalTask): void {
         if (this._isDead === true) {
-            return Promise.reject(new Error('TaskRunner has exited. Please create new task runner'));
+            throw new Error('task runner is dead');
         }
 
-        if (this._isFree === true) {
-            this._isFree = false;
-            return new Promise((resolve, reject): void => {
-                let options = {
-                    script: path,
-                    data: data
-                };
+        if (this._currentTask == null) {
+            this._currentTask = task;
 
-                //attach one time listeners so that we can callback when task is complete
-                this.once(MESSAGE, (result) => {
-                    resolve(result);
-                    this._count++;
-                    this._isFree = true;
+            let proxyOptions = {
+                script: this._currentTask.path,
+                data: this._currentTask.data
+            } as ITaskOptions;
+
+            this._process.send(proxyOptions, (err: Error) => {
+                if (err != null) {
+                    this._runCount++;
+                    if (this._currentTask != null) {
+                        this._currentTask.cb.reject(err);
+                        this._currentTask = null;
+                    } else {
+                        this.emit('error', err);
+                    }
                     this.emit('free');
-                });
-
-                this.once(ERROR, (err) => {
-                    reject(err);
-                    this._count++;
-                    this._isFree = true;
-                    this.emit('free');
-                });
-
-                //send the options to our child_process to be executed
-                this._process.send(options);
+                }
             });
         } else {
-            return Promise.reject(new Error('TaskRunner is busy, use the TaskContainer to queue up multiple tasks.'));
+            throw new Error('task runner is currently in use');
         }
     }
 
-    stop(): void {
-        if (this._isDead === false) {
-            this._process.kill();
-            this._process.removeAllListeners();
-        }
-    }
+    public stop(): void {
+        try {
+            this._isDead = true;
+            if (this._process != null) {
+                this._process.removeAllListeners();
+                this._process.kill();
+            }
 
-    /**
-     * runs the given script at the specified path passing the given data, and spawning a new TaskRunner with given options.
-     * this method is not recommended if starting several tasks, use the TaskContainer.
-     * @see TaskRunner.constructor
-     * 
-     * @returns TaskRunner
-     */
-    public static async run(path: string, data: any, options: TaskOptions) {
-        let task = new TaskRunner(options);
-        return task.start(path, data).then((r) => {
-            task.stop();
-            return r;
-        }, (error) => {
-            task.stop();
-            throw error;
-        }).catch((ex) => {
-            task.stop();
-            throw ex;
-        });
+            if (this._currentTask != null) {
+                this._currentTask.cb.reject(new Error('task runner has failed to run your specified task'));
+                this._currentTask = null;
+            }
+        } catch (ex) {
+            // do nothing... process is dead
+        }
+
+        this.emit('free');
     }
 }
