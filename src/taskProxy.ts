@@ -5,22 +5,30 @@ const runScript = (options: ITaskOptions) => {
     try {
         let task = require(options.script);
         if (task != null) {
-            if (task.length < 2) {
+            let runnable = task.default ?? task;
+            if (runnable.length < 2) {
                 // passed function returns a promise
-                task(options.data).then((result: any) => {
-                    process.send({ result: result });
-                }).catch((err: Error) => {
-                    process.send({ error: err.message ?? 'an error has occurred in task' });
-                });
-            } else {
+                let p = runnable(options.data);
+                if (p == null || (p instanceof Promise) !== true) {
+                    process.send({ error: 'Invalid task signature. Task must return a promise or take a callback as the second parameter.' });
+                } else {
+                    p.then((result: any) => {
+                        process.send({ result: result });
+                    }).catch((err: Error) => {
+                        process.send({ error: err.message ?? 'an error has occurred in task' });
+                    });
+                }
+            } else if (runnable.length === 2) {
                 // passed function expects a callback
-                task(options.data, (err: Error, result: any) => {
+                runnable(options.data, (err: Error, result: any) => {
                     if (err != null) {
                         process.send({ error: err.message ?? 'an error has occurred in task' });
                     } else {
                         process.send({ result: result });
                     }
                 });
+            } else {
+                process.send({ error: 'Invalid task signature. A task must have either no argument or a single argument and return a promise, or take a data object and callback as the second parameter.' });
             }
         }
     } catch (ex) {
