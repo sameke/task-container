@@ -12,8 +12,12 @@ export class TaskRunner extends EventEmitter {
     public constructor() {
         super();
 
+        // get the args from parent to pass to child
+        let childArgs = [...process.argv.splice(2)];
+
         this._process = fork(
-            require.resolve('./taskProxy')
+            require.resolve('./taskProxy'),
+            childArgs
         );
 
         // listen for messages returned from child_process
