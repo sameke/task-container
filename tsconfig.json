@@ -1,6 +1,10 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
+        "strict": true,
+        "alwaysStrict": false,
+        "strictNullChecks": false,
+        "forceConsistentCasingInFileNames": true,
         "rootDir": "src",
         "outDir": "dist",
         "sourceMap": false,
@@ -11,7 +15,9 @@
         "removeComments": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true
     },
     "include": [
         "./src/**/*.ts"

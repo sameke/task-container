@@ -24,7 +24,7 @@
             ]
         },
         {
-            "type": "node",
+            "type": "pwa-node",
             "request": "launch",
             "name": "Mocha TS Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
@@ -39,9 +39,10 @@
             "env": {
                 "NODE_ENV": "dev"
             },
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "protocol": "inspector"
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

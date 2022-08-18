@@ -22,7 +22,7 @@ export class TaskContainer extends EventEmitter {
      * @param {string} taskPath path to the task which should be run. The task specified must be of type ITask.
      * @param {any} data data to be passed to the task
      */
-    public run(taskPath: string, data?: any): Promise<any> {
+    public run<T, TResult>(taskPath: string, data?: T): Promise<TResult> {
         let task = {
             path: taskPath,
             data: data,
@@ -58,7 +58,7 @@ export class TaskContainer extends EventEmitter {
 
         if (this._taskQueue.length > 0) {
             // find an available runner
-            let runner: TaskRunner = null;
+            let runner: TaskRunner | null = null;
 
             // use the runner with the lowest count
             for (let r of this._taskRunners) {

@@ -1,47 +1,27 @@
 import { IRunnerError } from './IRunnerError';
+import { ITask } from './ITask';
 import { ITaskOptions } from './ITaskOptions';
 
-const runScript = (options: ITaskOptions) => {
+const runTask = async (options: ITaskOptions) => {
     try {
-        let task = require(options.script);
+        console.log('attempting to run task');
+        let task: ITask<any, any> = import(options.script) as any as ITask<any, any>;
         if (task != null) {
-            let runnable = task.default ?? task;
-            if (runnable.length < 2) {
-                // passed function returns a promise
-                let p = runnable(options.data);
-                if (p == null || (p instanceof Promise) !== true) {
-                    process.send({ error: 'Invalid task signature. Task must return a promise or take a callback as the second parameter.' });
-                } else {
-                    p.then((result: any) => {
-                        process.send({ result: result });
-                    }).catch((err: Error) => {
-                        process.send({ error: err.message ?? 'an error has occurred in task' });
-                    });
-                }
-            } else if (runnable.length === 2) {
-                // passed function expects a callback
-                runnable(options.data, (err: Error, result: any) => {
-                    if (err != null) {
-                        process.send({ error: err.message ?? 'an error has occurred in task' });
-                    } else {
-                        process.send({ result: result });
-                    }
-                });
-            } else {
-                process.send({ error: 'Invalid task signature. A task must have either no argument or a single argument and return a promise, or take a data object and callback as the second parameter.' });
-            }
+            let result = await task.run(options.data);
+            process.send({ result: result });
         }
     } catch (ex) {
-        process.send({ error: ex.message ?? 'an error has occurred in task' });
+        console.log('failed here');
+        process.send({ error: (ex as any).message ?? 'an error has occurred in task' });
     }
 };
 
 process.on('message', (msg: ITaskOptions) => {
     // ensure we have necessary params
-    if (msg.script == null || typeof msg.script !== 'string' || msg.script.trim() === '') {
+    if (msg?.script == null || typeof msg.script !== 'string' || msg.script.trim() === '') {
         process.send({ error: 'no script specified' } as IRunnerError);
     } else {
-        runScript(msg);
+        runTask(msg);
     }
 });
 

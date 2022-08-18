@@ -12,6 +12,8 @@ export class TaskRunner extends EventEmitter {
     public constructor() {
         super();
 
+        this._currentTask = null;
+
         // get the args from parent to pass to child
         let childArgs = [...process.argv.splice(2)];
 
@@ -80,7 +82,7 @@ export class TaskRunner extends EventEmitter {
                 data: this._currentTask.data
             } as ITaskOptions;
 
-            this._process.send(proxyOptions, (err: Error) => {
+            this._process.send(proxyOptions, (err) => {
                 if (err != null) {
                     this._runCount++;
                     if (this._currentTask != null) {
