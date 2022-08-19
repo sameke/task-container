@@ -5,44 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/dist-test/test/test.js",
             "request": "launch",
-            "name": "Mocha Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceFolder}/test"
-            ],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Mocha TS Tests",
-            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "--require",
-                "ts-node/register",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceFolder}/test/**/*.test.ts"
-            ],
-            "env": {
-                "NODE_ENV": "dev"
-            },
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
+            "type": "node"
         }
     ]
 }

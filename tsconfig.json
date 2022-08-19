@@ -8,7 +8,7 @@
         "rootDir": "src",
         "outDir": "dist",
         "sourceMap": false,
-        "target": "es2017",
+        "target": "es2022",
         "module": "commonjs",
         "declaration": true,
         "noImplicitAny": true,
@@ -17,7 +17,8 @@
         "experimentalDecorators": true,
         "moduleResolution": "node",
         "skipDefaultLibCheck": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "esModuleInterop": true
     },
     "include": [
         "./src/**/*.ts"

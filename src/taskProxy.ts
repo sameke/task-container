@@ -1,18 +1,28 @@
 import { IRunnerError } from './IRunnerError';
-import { ITask } from './ITask';
+import { Task } from './Task';
 import { ITaskOptions } from './ITaskOptions';
 
 const runTask = async (options: ITaskOptions) => {
     try {
-        console.log('attempting to run task');
-        let task: ITask<any, any> = import(options.script) as any as ITask<any, any>;
+        let task: { run: Task<any, any> } | { default: Task<any, any> } = await import(options.script);
+        if ((task as { default: Task<any, any> }).default != null) {
+            (task as any).run = (task as any).default;
+        }
         if (task != null) {
-            let result = await task.run(options.data);
-            process.send({ result: result });
+            let result = await (task as any).run(options.data);
+
+            if (process?.send != null) {
+                process.send({ result: result });
+            } else {
+                return result;
+            }
         }
     } catch (ex) {
-        console.log('failed here');
-        process.send({ error: (ex as any).message ?? 'an error has occurred in task' });
+        if (process?.send != null) {
+            process.send({ error: (ex as any).message ?? 'an error has occurred in task' });
+        } else {
+            console.log((ex as any).message ?? 'an error has occurred in task');
+        }
     }
 };
 
@@ -26,9 +36,19 @@ process.on('message', (msg: ITaskOptions) => {
 });
 
 process.on('uncaughtException', (ex: Error) => {
-    process.send({ error: ex.message } as IRunnerError);
+    if (process?.send != null) {
+        process.send({ error: ex.message } as IRunnerError);
+    } else {
+        console.log(ex.message ?? 'uncaught exception');
+    }
 });
 
 process.on('unhandledRejection', () => {
-    process.send({ error: 'unhandled rejection error' } as IRunnerError);
+    if (process?.send != null) {
+        process.send({ error: 'unhandled rejection error' } as IRunnerError);
+    } else {
+        console.log('unhandled rejection error');
+    }
 });
+
+export default runTask;

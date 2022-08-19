@@ -1,15 +1,38 @@
 {
-    "extends": "./tsconfig.json",
+    "compileOnSave": false,
     "compilerOptions": {
-        "outDir": "dist-test",
-        "rootDir": "",
+        "strict": true,
+        "alwaysStrict": false,
+        "strictNullChecks": false,
+        "forceConsistentCasingInFileNames": true,
         "rootDirs": [
             "src",
             "test"
-        ]
+        ],
+        "outDir": "dist-test",
+        "sourceMap": false,
+        "target": "es2022",
+        "module": "CommonJS",
+        "declaration": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "moduleResolution": "node",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true
     },
     "include": [
         "./src/**/*.ts",
         "./test/**/*.ts"
     ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build",
+        "coverage",
+        "apidocs",
+        "docs"
+    ]
 }
